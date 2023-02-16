@@ -10,35 +10,38 @@ app.use(cors());
 
 app.post('/email', async (req, res) => {
   try {
-    let testAccount = await nodemailer.createTestAccount();
-    console.log('testAccount', testAccount);
-    // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      host: 'smtp.ethereal.email',
+      port: 587,
       auth: {
-        user: process.env.SMTP_USERNAME,
-        pass: process.env.SMTP_PASSWORD,
-      },
+          user: 'trever7@ethereal.email',
+          pass: 'Mf7dk9asZhw7wpZPdY'
+      }
+  });
+
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log('error in verify smtp', error);
+      } else {
+        console.log('Server is ready to take our messages');
+      }
     });
-    console.log('transporter', transporter);
-    // send mail with defined transport object
+
     const info = await transporter.sendMail({
       from: process.env.SMTP_FROM,
       to: 'sarbhadi@gmail.com, ravi@baruzotech.com',
-      subject: 'Hello ✔', // Subject line
-      text: 'Hello world?', // plain text body
-      html: '<b>Hello world?</b>', // html body
+      subject: 'Hello ✔ test ',
+      text: 'Hello world?',
+      html: '<b>Hello world?</b>',
     });
 
     console.log('Message sent: %s', info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-    // Preview only available when sending through an Ethereal account
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    return res
+      .status(201)
+      .send({ status: true, message: 'email sent', data: info.messageId });
   } catch (error) {
-    console.log('error==', error);
+    return res.status(500).send({ status: false, message: error.message });
   }
 });
 
