@@ -7,7 +7,9 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
++app.set('view engine', 'ejs');
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -17,10 +19,15 @@ const OAuth2 = google.auth.OAuth2;
 const OAuth2_client = new OAuth2(clientId, clientSecret);
 OAuth2_client.setCredentials({ refresh_token: refershToken });
 
-app.post('/email', async (req, res) => {
+app.get('/', (req, res) => {
+  res.render('home');
+});
+app.post('/sendMail', async (req, res) => {
   try {
+    console.log('req===========', req.body.email);
+    console.log('req===========', req.body.text);
+    let recepeint = req.body.email;
     const accessToken = OAuth2_client.getAccessToken();
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -43,10 +50,10 @@ app.post('/email', async (req, res) => {
 
     const info = await transporter.sendMail({
       from: 'amarjeet@baruzotech.com',
-      to: 'sarbhadi@gmail.com',
+      to: recepeint,
       subject: 'Hello ✔ test ',
-      text: 'Hello world?',
-      html: '<b>Hello world?</b>',
+      text: req.body.text,
+      html: `<b> ${req.body.text}</b>`,
     });
 
     console.log('info==>>>>>', info);
