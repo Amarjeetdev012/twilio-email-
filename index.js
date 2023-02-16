@@ -3,13 +3,14 @@ import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import axios from 'axios';
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-+app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -40,8 +41,11 @@ app.post('/sendMail', async (req, res) => {
       },
     });
 
+    console.log('transporter===>>>', transporter);
     transporter.verify(function (error, success) {
       if (error) {
+        console.log('err=====>>>>>>>>>');
+
         console.log('error in verify smtp', error);
       } else {
         console.log('Server is ready to take our messages');
@@ -66,6 +70,22 @@ app.post('/sendMail', async (req, res) => {
     return res.status(500).send({ status: false, message: error.message });
   }
 });
+
+// get access token using refresh token
+// axios
+//   .post('https://oauth2.googleapis.com/token', {
+//     clientId,
+//     clientSecret,
+//     refershToken,
+//     grant_type: 'refresh_token',
+//   })
+//   .then((response) => {
+//     const access_token = response.data.access_token;
+//     console.log('Access token:====>>>>', access_token);
+//   })
+//   .catch((error) => {
+//     console.error('Error refreshing access token:', error.message);
+//   });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
