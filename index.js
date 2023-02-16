@@ -1,5 +1,6 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -8,16 +9,29 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const refershToken = process.env.REFRESH_TOKEN;
+
+const OAuth2 = google.auth.OAuth2;
+const OAuth2_client = new OAuth2(clientId, clientSecret);
+OAuth2_client.setCredentials({ refresh_token: refershToken });
+
 app.post('/email', async (req, res) => {
   try {
+    const accessToken = OAuth2_client.getAccessToken();
+
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      service: 'gmail',
       auth: {
-          user: 'trever7@ethereal.email',
-          pass: 'Mf7dk9asZhw7wpZPdY'
-      }
-  });
+        type: 'OAuth2',
+        user: 'amarjeet@baruzotech.com',
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshToken: refershToken,
+        accessToken: accessToken,
+      },
+    });
 
     transporter.verify(function (error, success) {
       if (error) {
@@ -28,13 +42,14 @@ app.post('/email', async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: process.env.SMTP_FROM,
-      to: 'sarbhadi@gmail.com, ravi@baruzotech.com',
+      from: 'amarjeet@baruzotech.com',
+      to: 'sarbhadi@gmail.com',
       subject: 'Hello ✔ test ',
       text: 'Hello world?',
       html: '<b>Hello world?</b>',
     });
 
+    console.log('info==>>>>>', info);
     console.log('Message sent: %s', info.messageId);
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     return res
