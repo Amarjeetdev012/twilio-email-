@@ -12,13 +12,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.set('view engine', 'ejs');
 
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const refershToken = process.env.REFRESH_TOKEN;
+// const clientId = process.env.CLIENT_ID;
+// const clientSecret = process.env.CLIENT_SECRET;
+// const refershToken = process.env.REFRESH_TOKEN;
 
-const OAuth2 = google.auth.OAuth2;
-const OAuth2_client = new OAuth2(clientId, clientSecret);
-OAuth2_client.setCredentials({ refresh_token: refershToken });
+// const OAuth2 = google.auth.OAuth2;
+// const OAuth2_client = new OAuth2(clientId, clientSecret);
+// OAuth2_client.setCredentials({ refresh_token: refershToken });
 
 app.get('/', (req, res) => {
   res.render('home');
@@ -28,20 +28,24 @@ app.post('/sendMail', async (req, res) => {
     console.log('req===========', req.body.email);
     console.log('req===========', req.body.text);
     let recepeint = req.body.email;
-    const accessToken = OAuth2_client.getAccessToken();
+    // const accessToken = OAuth2_client.getAccessToken();
     const transporter = nodemailer.createTransport({
       service: 'gmail',
+      // auth: {
+      //   type: 'OAuth2',
+      //   user: 'amarjeet@baruzotech.com',
+      //   clientId: clientId,
+      //   clientSecret: clientSecret,
+      //   refreshToken: refershToken,
+      //   accessToken: accessToken,
+      // },
       auth: {
-        type: 'OAuth2',
         user: 'amarjeet@baruzotech.com',
-        clientId: clientId,
-        clientSecret: clientSecret,
-        refreshToken: refershToken,
-        accessToken: accessToken,
+        pass: 'yhelnmgeebamuhgw',
       },
     });
 
-    console.log('transporter===>>>', transporter);
+    // console.log('transporter===>>>', transporter);
     transporter.verify(function (error, success) {
       if (error) {
         console.log('err=====>>>>>>>>>');

@@ -1,9 +1,3 @@
-# twilio-email-
+manage your google account =>then security => signingn into google => app passwords => get password and use this password in auth userid and password
 
-<!-- env variables PORT=3000
-JWT_TOKEN="ksdjfdjkrt454e65r465465d4f65g4d6f54g6d5f"
-SMTP_HOST = 'mail.megamock.com'
-SMTP_PORT =  465
-SMTP_USERNAME = 'noreply@megamock.com'
-SMTP_PASSWORD = '6jJM;93F#dsL3q'
-SMTP_FROM = '"megamock" <noreply@megamock.com>' -->
+
