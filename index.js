@@ -15,6 +15,7 @@ app.set('view engine', 'ejs');
 // const clientId = process.env.CLIENT_ID;
 // const clientSecret = process.env.CLIENT_SECRET;
 // const refershToken = process.env.REFRESH_TOKEN;
+const password = process.env.GOOGLE_PASSWORD;
 
 // const OAuth2 = google.auth.OAuth2;
 // const OAuth2_client = new OAuth2(clientId, clientSecret);
@@ -41,7 +42,7 @@ app.post('/sendMail', async (req, res) => {
       // },
       auth: {
         user: 'amarjeet@baruzotech.com',
-        pass: 'yhelnmgeebamuhgw',
+        pass: password,
       },
     });
 
